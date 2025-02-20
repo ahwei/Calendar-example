@@ -24,23 +24,22 @@ const Calendar = ({
     selectedDate || dayjs(),
   );
 
-  const monthDays = useMemo(() => {
-    const startOfMonth: Dayjs = currentDate.startOf('month').startOf('week');
-    const endOfMonth: Dayjs = currentDate.endOf('month').endOf('week');
-    const days: Dayjs[] = [];
-
-    let day: Dayjs = startOfMonth;
-    while (day.isBefore(endOfMonth) || day.isSame(endOfMonth, 'day')) {
-      days.push(day);
-      day = day.add(1, 'day');
+  const displayDays = useMemo(() => {
+    if (viewMode === 'month') {
+      const startOfMonth: Dayjs = currentDate.startOf('month').startOf('week');
+      const endOfMonth: Dayjs = currentDate.endOf('month').endOf('week');
+      const days: Dayjs[] = [];
+      let day: Dayjs = startOfMonth;
+      while (day.isBefore(endOfMonth) || day.isSame(endOfMonth, 'day')) {
+        days.push(day);
+        day = day.add(1, 'day');
+      }
+      return days;
+    } else {
+      const startOfWeek: Dayjs = currentDate.startOf('week');
+      return Array.from({ length: 7 }, (_, i) => startOfWeek.add(i, 'day'));
     }
-    return days;
-  }, [currentDate]);
-
-  const weekDays = useMemo(() => {
-    const startOfWeek: Dayjs = currentDate.startOf('week');
-    return Array.from({ length: 7 }, (_, i) => startOfWeek.add(i, 'day'));
-  }, [currentDate]);
+  }, [currentDate, viewMode]);
 
   const handlePrev = (): void => {
     setCurrentDate((prev) => prev.subtract(1, viewMode));
@@ -115,7 +114,7 @@ const Calendar = ({
         ))}
       </div>
       <div className="grid grid-cols-7 gap-1">
-        {(viewMode === 'month' ? monthDays : weekDays).map((day) => (
+        {displayDays.map((day) => (
           <div
             key={day.format('YYYY-MM-DD')}
             onClick={() => handleDateClick(day)}
