@@ -8,12 +8,7 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gray-100 py-12">
       <div className="container mx-auto px-4">
-        <Calendar
-          selectedDate={selectedDate}
-          onDateSelect={setSelectedDate}
-          primaryColor="bg-purple-500"
-          secondaryColor="bg-purple-100"
-        />
+        <Calendar selectedDate={selectedDate} onDateSelect={setSelectedDate} />
         {selectedDate && (
           <div className="mt-6 text-center text-gray-700">
             Selected Date: {selectedDate.format('YYYY-MM-DD')}
