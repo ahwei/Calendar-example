@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
-
 import { useMemo, useState } from 'react';
+import DatePickerPopup from './DatePickerPopup';
 
 interface CalendarProps {
   onDateSelect?: (date: Dayjs) => void;
@@ -23,6 +23,9 @@ const Calendar = ({
   const [currentDate, setCurrentDate] = useState<Dayjs>(
     selectedDate || dayjs(),
   );
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectYear, setSelectYear] = useState(currentDate.year());
+  const [selectMonth, setSelectMonth] = useState(currentDate.month() + 1); // dayjs month 0-indexed
 
   const displayDays = useMemo(() => {
     if (viewMode === 'month') {
@@ -57,6 +60,12 @@ const Calendar = ({
     onDateSelect?.(date);
   };
 
+  const handleConfirmPopup = () => {
+    const newDate = dayjs(`${selectYear}-${selectMonth}`);
+    setCurrentDate(newDate);
+    setShowPopup(false);
+  };
+
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md">
       <div className="flex justify-between items-center mb-6">
@@ -70,7 +79,10 @@ const Calendar = ({
         >
           Month
         </button>
-        <span className="text-lg font-semibold">
+        <span
+          className="text-lg font-semibold cursor-pointer"
+          onClick={() => setShowPopup(true)}
+        >
           {currentDate.format('YYYY-MM')}
         </span>
         <button
@@ -84,6 +96,7 @@ const Calendar = ({
           Week
         </button>
       </div>
+
       <div className="flex justify-between items-center mb-6">
         <button
           className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
@@ -136,6 +149,18 @@ const Calendar = ({
           </div>
         ))}
       </div>
+
+      {showPopup && (
+        <DatePickerPopup
+          selectedYear={selectYear}
+          selectedMonth={selectMonth}
+          onYearChange={setSelectYear}
+          onMonthChange={setSelectMonth}
+          onConfirm={handleConfirmPopup}
+          onCancel={() => setShowPopup(false)}
+          primaryColor={primaryColor} // 新增，使用 primaryColor 傳遞
+        />
+      )}
     </div>
   );
 };
