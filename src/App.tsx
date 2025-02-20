@@ -1,5 +1,10 @@
+import Calendar from '@/components/Calendar';
 import './App.css';
 
-const App = () => <div></div>;
+const App = () => (
+  <div>
+    <Calendar />
+  </div>
+);
 
 export default App;
