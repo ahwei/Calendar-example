@@ -1,10 +1,27 @@
 import Calendar from '@/components/Calendar';
-import './App.css';
+import { Dayjs } from 'dayjs';
+import { useState } from 'react';
 
-const App = () => (
-  <div>
-    <Calendar />
-  </div>
-);
+const App = () => {
+  const [selectedDate, setSelectedDate] = useState<Dayjs | undefined>();
+
+  return (
+    <div className="min-h-screen bg-gray-100 py-12">
+      <div className="container mx-auto px-4">
+        <Calendar
+          selectedDate={selectedDate}
+          onDateSelect={setSelectedDate}
+          primaryColor="bg-purple-500"
+          secondaryColor="bg-purple-100"
+        />
+        {selectedDate && (
+          <div className="mt-6 text-center text-gray-700">
+            Selected Date: {selectedDate.format('YYYY-MM-DD')}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default App;

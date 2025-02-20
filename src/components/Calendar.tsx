@@ -1,14 +1,27 @@
-// CalendarApp.tsx
 import dayjs, { Dayjs } from 'dayjs';
 import { useState } from 'react';
+
+interface CalendarProps {
+  onDateSelect?: (date: Dayjs) => void;
+  selectedDate?: Dayjs;
+  primaryColor?: string;
+  secondaryColor?: string;
+}
 
 const weekdays: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 type ViewMode = 'month' | 'week';
 
-const Calendar = () => {
+const Calendar = ({
+  onDateSelect,
+  selectedDate,
+  primaryColor = 'bg-blue-500',
+  secondaryColor = 'bg-blue-50',
+}: CalendarProps) => {
   const [viewMode, setViewMode] = useState<ViewMode>('month');
-  const [currentDate, setCurrentDate] = useState<Dayjs>(dayjs());
+  const [currentDate, setCurrentDate] = useState<Dayjs>(
+    selectedDate || dayjs(),
+  );
 
   const startOfMonth: Dayjs = currentDate.startOf('month').startOf('week');
   const endOfMonth: Dayjs = currentDate.endOf('month').endOf('week');
@@ -37,62 +50,84 @@ const Calendar = () => {
     setCurrentDate(dayjs());
   };
 
-  const renderDays = (days: Dayjs[]) => (
-    <div className="grid grid-cols-7 gap-2">
-      {days.map((day) => (
-        <div
-          key={day.format('YYYY-MM-DD')}
-          className={`p-2 text-center rounded-lg border ${
-            day.isSame(dayjs(), 'day')
-              ? 'bg-sky-200 font-bold'
-              : day.isSame(currentDate, 'month')
-              ? 'bg-white'
-              : 'bg-gray-200 text-gray-500'
-          }`}
-        >
-          {day.date()}
-        </div>
-      ))}
-    </div>
-  );
+  const handleDateClick = (date: Dayjs) => {
+    onDateSelect?.(date);
+  };
 
   return (
-    <div className="max-w-md mx-auto p-4">
-      <div className="flex justify-between items-center mb-4">
+    <div className="max-w-2xl mx-auto p-6 bg-white rounded-xl shadow-md">
+      <div className="flex justify-between items-center mb-6">
         <button
-          className={`px-2 py-1 border rounded ${
-            viewMode === 'month' ? 'bg-blue-500 text-white' : ''
+          className={`px-4 py-2 rounded-full transition-colors duration-200 cursor-pointer ${
+            viewMode === 'month'
+              ? `${primaryColor} text-white shadow-sm hover:opacity-90`
+              : 'text-gray-600 hover:bg-gray-100'
           }`}
           onClick={() => setViewMode('month')}
         >
           Month
         </button>
         <button
-          className={`px-2 py-1 border rounded ${
-            viewMode === 'week' ? 'bg-blue-500 text-white' : ''
+          className={`px-4 py-2 rounded-full transition-colors duration-200 cursor-pointer ${
+            viewMode === 'week'
+              ? `${primaryColor} text-white shadow-sm hover:opacity-90`
+              : 'text-gray-600 hover:bg-gray-100'
           }`}
           onClick={() => setViewMode('week')}
         >
           Week
         </button>
       </div>
-      <div className="flex justify-between mb-4">
-        <button className="px-2 py-1 border rounded" onClick={handlePrev}>
-          Prev
+      <div className="flex justify-between items-center mb-6">
+        <button
+          className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+          onClick={handlePrev}
+        >
+          <span className="material-icons">Prev</span>
         </button>
-        <button className="px-2 py-1 border rounded" onClick={handleToday}>
+        <button
+          className={`px-4 py-2 rounded-lg ${primaryColor} text-white shadow-sm hover:opacity-90 transition-colors duration-200 cursor-pointer`}
+          onClick={handleToday}
+        >
           Today
         </button>
-        <button className="px-2 py-1 border rounded" onClick={handleNext}>
-          Next
+        <button
+          className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+          onClick={handleNext}
+        >
+          <span className="material-icons">Next</span>
         </button>
       </div>
-      <div className="grid grid-cols-7 font-semibold text-center mb-2">
+      <div className="grid grid-cols-7 text-sm font-medium text-gray-600 mb-4">
         {weekdays.map((day) => (
-          <div key={day}>{day}</div>
+          <div key={day} className="text-center py-2">
+            {day}
+          </div>
         ))}
       </div>
-      {viewMode === 'month' ? renderDays(monthDays) : renderDays(weekDays)}
+      <div className="grid grid-cols-7 gap-1">
+        {(viewMode === 'month' ? monthDays : weekDays).map((day) => (
+          <div
+            key={day.format('YYYY-MM-DD')}
+            onClick={() => handleDateClick(day)}
+            className={`
+              aspect-square p-2 flex items-center justify-center rounded-lg
+              transition-colors duration-200 cursor-pointer
+              ${
+                selectedDate?.isSame(day, 'day')
+                  ? `${primaryColor} text-white font-medium`
+                  : day.isSame(dayjs(), 'day')
+                  ? `${secondaryColor} font-medium`
+                  : day.isSame(currentDate, 'month')
+                  ? 'hover:bg-gray-100'
+                  : 'text-gray-400 hover:bg-gray-50'
+              }
+            `}
+          >
+            {day.date()}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
