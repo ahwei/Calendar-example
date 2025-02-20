@@ -1,5 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
-import { useState } from 'react';
+
+import { useMemo, useState } from 'react';
 
 interface CalendarProps {
   onDateSelect?: (date: Dayjs) => void;
@@ -23,20 +24,23 @@ const Calendar = ({
     selectedDate || dayjs(),
   );
 
-  const startOfMonth: Dayjs = currentDate.startOf('month').startOf('week');
-  const endOfMonth: Dayjs = currentDate.endOf('month').endOf('week');
-  const monthDays: Dayjs[] = [];
+  const monthDays = useMemo(() => {
+    const startOfMonth: Dayjs = currentDate.startOf('month').startOf('week');
+    const endOfMonth: Dayjs = currentDate.endOf('month').endOf('week');
+    const days: Dayjs[] = [];
 
-  let day: Dayjs = startOfMonth;
-  while (day.isBefore(endOfMonth) || day.isSame(endOfMonth, 'day')) {
-    monthDays.push(day);
-    day = day.add(1, 'day');
-  }
+    let day: Dayjs = startOfMonth;
+    while (day.isBefore(endOfMonth) || day.isSame(endOfMonth, 'day')) {
+      days.push(day);
+      day = day.add(1, 'day');
+    }
+    return days;
+  }, [currentDate]);
 
-  const startOfWeek: Dayjs = currentDate.startOf('week');
-  const weekDays: Dayjs[] = Array.from({ length: 7 }, (_, i) =>
-    startOfWeek.add(i, 'day'),
-  );
+  const weekDays = useMemo(() => {
+    const startOfWeek: Dayjs = currentDate.startOf('week');
+    return Array.from({ length: 7 }, (_, i) => startOfWeek.add(i, 'day'));
+  }, [currentDate]);
 
   const handlePrev = (): void => {
     setCurrentDate((prev) => prev.subtract(1, viewMode));
@@ -67,6 +71,9 @@ const Calendar = ({
         >
           Month
         </button>
+        <span className="text-lg font-semibold">
+          {currentDate.format('YYYY-MM')}
+        </span>
         <button
           className={`px-4 py-2 rounded-full transition-colors duration-200 cursor-pointer ${
             viewMode === 'week'
@@ -85,12 +92,14 @@ const Calendar = ({
         >
           <span className="material-icons">Prev</span>
         </button>
-        <button
-          className={`px-4 py-2 rounded-lg ${primaryColor} text-white shadow-sm hover:opacity-90 transition-colors duration-200 cursor-pointer`}
-          onClick={handleToday}
-        >
-          Today
-        </button>
+        <div className="flex flex-col items-center">
+          <button
+            className={`px-4 py-2 rounded-lg ${primaryColor} text-white shadow-sm hover:opacity-90 transition-colors duration-200 cursor-pointer mt-2`}
+            onClick={handleToday}
+          >
+            Today
+          </button>
+        </div>
         <button
           className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
           onClick={handleNext}
