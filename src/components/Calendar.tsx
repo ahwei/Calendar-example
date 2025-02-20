@@ -15,8 +15,8 @@ type ViewMode = 'month' | 'week';
 const Calendar = ({
   onDateSelect,
   selectedDate,
-  primaryColor = 'bg-blue-500',
-  secondaryColor = 'bg-blue-50',
+  primaryColor = 'bg-mint-500',
+  secondaryColor = 'bg-mint-50',
 }: CalendarProps) => {
   const [viewMode, setViewMode] = useState<ViewMode>('month');
   const [currentDate, setCurrentDate] = useState<Dayjs>(
