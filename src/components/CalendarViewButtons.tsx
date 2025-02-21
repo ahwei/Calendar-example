@@ -1,6 +1,7 @@
+import { ViewMode } from '@/types/calendar';
 interface CalendarViewButtonsProps {
-  viewMode: 'month' | 'week';
-  onChange: (mode: 'month' | 'week') => void;
+  viewMode: ViewMode;
+  onChange: (mode: ViewMode) => void;
   primaryColor: string;
 }
 
@@ -17,7 +18,7 @@ const CalendarViewButtons = ({
             ? `${primaryColor} text-white shadow-sm`
             : 'text-gray-600 hover:bg-gray-100'
         }`}
-        onClick={() => onChange('month')}
+        onClick={() => onChange(ViewMode.Month)}
       >
         Month
       </button>
@@ -27,7 +28,7 @@ const CalendarViewButtons = ({
             ? `${primaryColor} text-white shadow-sm`
             : 'text-gray-600 hover:bg-gray-100'
         }`}
-        onClick={() => onChange('week')}
+        onClick={() => onChange(ViewMode.Week)}
       >
         Week
       </button>

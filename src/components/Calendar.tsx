@@ -1,5 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo, useState } from 'react';
+import { ViewMode, ZoomLevel } from '../types/calendar';
 import CalendarGrid from './CalendarGrid';
 import CalendarHeader from './CalendarHeader';
 import CalendarViewButtons from './CalendarViewButtons';
@@ -11,24 +12,21 @@ interface CalendarProps {
   secondaryColor?: string;
 }
 
-type ViewMode = 'month' | 'week';
-type ZoomLevel = 'day' | 'month' | 'year' | 'multi-year';
-
 const Calendar = ({
   onDateSelect,
   selectedDate,
   primaryColor = 'bg-mint-500',
   secondaryColor = 'bg-mint-50',
 }: CalendarProps) => {
-  const [viewMode, setViewMode] = useState<ViewMode>('month');
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Month);
   const [currentDate, setCurrentDate] = useState<Dayjs>(
     selectedDate || dayjs(),
   );
-  const [zoomLevel, setZoomLevel] = useState<ZoomLevel>('day');
+  const [zoomLevel, setZoomLevel] = useState<ZoomLevel>(ZoomLevel.Day);
 
   const displayDays = useMemo(() => {
-    if (zoomLevel !== 'day') return [];
-    if (viewMode === 'month') {
+    if (zoomLevel !== ZoomLevel.Day) return [];
+    if (viewMode === ViewMode.Month) {
       const startOfMonth: Dayjs = currentDate.startOf('month').startOf('week');
       const endOfMonth: Dayjs = currentDate.endOf('month').endOf('week');
       const days: Dayjs[] = [];
@@ -45,64 +43,64 @@ const Calendar = ({
   }, [currentDate, viewMode, zoomLevel]);
 
   const handleHeaderClick = () => {
-    if (zoomLevel === 'day') setZoomLevel('month');
-    else if (zoomLevel === 'month') setZoomLevel('year');
-    else if (zoomLevel === 'year') setZoomLevel('multi-year');
-    else setZoomLevel('day');
+    if (zoomLevel === ZoomLevel.Day) setZoomLevel(ZoomLevel.Month);
+    else if (zoomLevel === ZoomLevel.Month) setZoomLevel(ZoomLevel.Year);
+    else if (zoomLevel === ZoomLevel.Year) setZoomLevel(ZoomLevel.MultiYear);
+    else setZoomLevel(ZoomLevel.Day);
   };
 
   const handlePrev = () => {
-    if (zoomLevel === 'day') {
+    if (zoomLevel === ZoomLevel.Day) {
       setCurrentDate((prev) => prev.subtract(1, viewMode));
-    } else if (zoomLevel === 'month') {
+    } else if (zoomLevel === ZoomLevel.Month) {
       setCurrentDate((prev) => prev.subtract(1, 'year'));
-    } else if (zoomLevel === 'year') {
+    } else if (zoomLevel === ZoomLevel.Year) {
       setCurrentDate((prev) => prev.subtract(10, 'year'));
-    } else if (zoomLevel === 'multi-year') {
+    } else if (zoomLevel === ZoomLevel.MultiYear) {
       setCurrentDate((prev) => prev.subtract(300, 'year'));
     }
   };
 
   const handleNext = () => {
-    if (zoomLevel === 'day') {
+    if (zoomLevel === ZoomLevel.Day) {
       setCurrentDate((prev) => prev.add(1, viewMode));
-    } else if (zoomLevel === 'month') {
+    } else if (zoomLevel === ZoomLevel.Month) {
       setCurrentDate((prev) => prev.add(1, 'year'));
-    } else if (zoomLevel === 'year') {
+    } else if (zoomLevel === ZoomLevel.Year) {
       setCurrentDate((prev) => prev.add(10, 'year'));
-    } else if (zoomLevel === 'multi-year') {
+    } else if (zoomLevel === ZoomLevel.MultiYear) {
       setCurrentDate((prev) => prev.add(300, 'year'));
     }
   };
 
   const handleToday = () => {
     setCurrentDate(dayjs());
-    setZoomLevel('day');
+    setZoomLevel(ZoomLevel.Day);
   };
 
   const handleDayClick = (date: Dayjs) => {
-    if (zoomLevel === 'day') onDateSelect?.(date);
+    if (zoomLevel === ZoomLevel.Day) onDateSelect?.(date);
   };
 
   const handleMonthSelect = (month: number) => {
     setCurrentDate(currentDate.year(currentDate.year()).month(month - 1));
-    setZoomLevel('day');
+    setZoomLevel(ZoomLevel.Day);
   };
 
   const handleYearSelect = (year: number) => {
     setCurrentDate(currentDate.year(year));
-    setZoomLevel('month');
+    setZoomLevel(ZoomLevel.Month);
   };
 
   const handleMultiYearSelect = (year: number) => {
     setCurrentDate(currentDate.year(year));
-    setZoomLevel('year');
+    setZoomLevel(ZoomLevel.Year);
   };
 
   const getHeaderLabel = () => {
-    if (zoomLevel === 'day') return currentDate.format('YYYY-MM');
-    if (zoomLevel === 'month') return currentDate.format('YYYY');
-    if (zoomLevel === 'year') {
+    if (zoomLevel === ZoomLevel.Day) return currentDate.format('YYYY-MM');
+    if (zoomLevel === ZoomLevel.Month) return currentDate.format('YYYY');
+    if (zoomLevel === ZoomLevel.Year) {
       const startDecade = Math.floor(currentDate.year() / 10) * 10;
       return `${startDecade}-${startDecade + 9}`;
     }
@@ -128,7 +126,7 @@ const Calendar = ({
         </button>
       </div>
 
-      {zoomLevel === 'day' && (
+      {zoomLevel === ZoomLevel.Day && (
         <CalendarViewButtons
           viewMode={viewMode}
           onChange={setViewMode}

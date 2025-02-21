@@ -1,13 +1,14 @@
 import { Dayjs } from 'dayjs';
+import { ViewMode, ZoomLevel } from '../types/calendar';
 
 interface CalendarGridProps {
-  zoomLevel: 'day' | 'month' | 'year' | 'multi-year';
-  viewMode: 'month' | 'week';
+  zoomLevel: ZoomLevel;
+  viewMode: ViewMode;
   currentDate: Dayjs;
   selectedDate?: Dayjs;
   primaryColor: string;
   secondaryColor: string;
-  displayDays: Dayjs[]; // 僅用於 zoomLevel === 'day'
+  displayDays: Dayjs[]; // 僅用於 zoomLevel === ZoomLevel.Day
   onDayClick: (date: Dayjs) => void;
   onMonthSelect: (month: number) => void;
   onYearSelect: (year: number) => void;
@@ -26,7 +27,7 @@ const CalendarGrid = ({
   onYearSelect,
   onMultiYearSelect,
 }: CalendarGridProps) => {
-  if (zoomLevel === 'day') {
+  if (zoomLevel === ZoomLevel.Day) {
     return (
       <>
         <div className="grid grid-cols-7 text-sm font-medium text-gray-600 mb-4">
@@ -63,7 +64,7 @@ const CalendarGrid = ({
     );
   }
 
-  if (zoomLevel === 'month') {
+  if (zoomLevel === ZoomLevel.Month) {
     const monthNames = [
       'January',
       'February',
@@ -97,7 +98,7 @@ const CalendarGrid = ({
     );
   }
 
-  if (zoomLevel === 'year') {
+  if (zoomLevel === ZoomLevel.Year) {
     const startDecade = Math.floor(currentDate.year() / 10) * 10;
     return (
       <div className="grid grid-cols-5 gap-4">
@@ -118,7 +119,7 @@ const CalendarGrid = ({
     );
   }
 
-  if (zoomLevel === 'multi-year') {
+  if (zoomLevel === ZoomLevel.MultiYear) {
     const base = currentDate.year() - (currentDate.year() % 300);
     return (
       <div className="grid grid-cols-6 gap-2 max-h-[400px] overflow-auto">
