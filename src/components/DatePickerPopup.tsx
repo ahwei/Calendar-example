@@ -32,7 +32,7 @@ const DatePickerPopup = ({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+      className="fixed inset-0 flex items-center justify-center bg-gray-50/75"
       onClick={handleBackgroundClick}
     >
       <div className="bg-white p-4 rounded-lg">
@@ -57,12 +57,15 @@ const DatePickerPopup = ({
           </div>
         </div>
         <div className="flex justify-end space-x-2">
-          <button onClick={onCancel} className="px-3 py-1 bg-gray-200 rounded">
+          <button
+            onClick={onCancel}
+            className="px-3 py-1 bg-gray-200 rounded cursor-pointer"
+          >
             Cancel
           </button>
           <button
             onClick={onConfirm}
-            className="px-3 py-1 bg-blue-500 text-white rounded"
+            className={`px-3 py-1 ${primaryColor} text-white rounded cursor-pointer`}
           >
             Confirm
           </button>
