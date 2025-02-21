@@ -1,6 +1,6 @@
 import dayjs, { Dayjs } from 'dayjs';
 import { useMemo, useState } from 'react';
-
+import { MdArrowBackIosNew, MdArrowForwardIos } from 'react-icons/md';
 interface CalendarProps {
   onDateSelect?: (date: Dayjs) => void;
   selectedDate?: Dayjs;
@@ -119,7 +119,9 @@ const Calendar = ({
           className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
           onClick={handlePrev}
         >
-          <span className="material-icons">arrow_back</span>
+          <span className="material-icons">
+            <MdArrowBackIosNew />
+          </span>
         </button>
         <span
           className="text-lg font-semibold cursor-pointer"
@@ -131,7 +133,9 @@ const Calendar = ({
           className="p-2 rounded-full hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
           onClick={handleNext}
         >
-          <span className="material-icons">arrow_forward</span>
+          <span className="material-icons">
+            <MdArrowForwardIos />
+          </span>
         </button>
       </div>
 
