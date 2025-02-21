@@ -1,32 +1,40 @@
 import { Dayjs } from 'dayjs';
 import { ViewMode, ZoomLevel } from '../types/calendar';
 
-interface CalendarGridProps {
+interface CalendarGridState {
   zoomLevel: ZoomLevel;
   viewMode: ViewMode;
   currentDate: Dayjs;
   selectedDate?: Dayjs;
   primaryColor: string;
   secondaryColor: string;
-  displayDays: Dayjs[]; // 僅用於 zoomLevel === ZoomLevel.Day
+  displayDays: Dayjs[];
+}
+
+interface CalendarGridActions {
   onDayClick: (date: Dayjs) => void;
   onMonthSelect: (month: number) => void;
   onYearSelect: (year: number) => void;
   onMultiYearSelect: (year: number) => void;
 }
 
-const CalendarGrid = ({
-  zoomLevel,
-  currentDate,
-  selectedDate,
-  primaryColor,
-  secondaryColor,
-  displayDays,
-  onDayClick,
-  onMonthSelect,
-  onYearSelect,
-  onMultiYearSelect,
-}: CalendarGridProps) => {
+interface CalendarGridProps {
+  state: CalendarGridState;
+  actions: CalendarGridActions;
+}
+
+const CalendarGrid = ({ state, actions }: CalendarGridProps) => {
+  const {
+    zoomLevel,
+    currentDate,
+    selectedDate,
+    primaryColor,
+    secondaryColor,
+    displayDays,
+  } = state;
+  const { onDayClick, onMonthSelect, onYearSelect, onMultiYearSelect } =
+    actions;
+
   if (zoomLevel === ZoomLevel.Day) {
     return (
       <>

@@ -26,6 +26,7 @@ const Calendar = ({
 
   const displayDays = useMemo(() => {
     if (zoomLevel !== ZoomLevel.Day) return [];
+
     if (viewMode === ViewMode.Month) {
       const startOfMonth: Dayjs = currentDate.startOf('month').startOf('week');
       const endOfMonth: Dayjs = currentDate.endOf('month').endOf('week');
@@ -104,6 +105,7 @@ const Calendar = ({
       const startDecade = Math.floor(currentDate.year() / 10) * 10;
       return `${startDecade}-${startDecade + 9}`;
     }
+
     const base = currentDate.year() - (currentDate.year() % 300);
     return `${base}-${base + 299}`;
   };
@@ -135,17 +137,21 @@ const Calendar = ({
       )}
 
       <CalendarGrid
-        zoomLevel={zoomLevel}
-        viewMode={viewMode}
-        currentDate={currentDate}
-        selectedDate={selectedDate}
-        primaryColor={primaryColor}
-        secondaryColor={secondaryColor}
-        displayDays={displayDays}
-        onDayClick={handleDayClick}
-        onMonthSelect={handleMonthSelect}
-        onYearSelect={handleYearSelect}
-        onMultiYearSelect={handleMultiYearSelect}
+        state={{
+          zoomLevel,
+          viewMode,
+          currentDate,
+          selectedDate,
+          primaryColor,
+          secondaryColor,
+          displayDays,
+        }}
+        actions={{
+          onDayClick: handleDayClick,
+          onMonthSelect: handleMonthSelect,
+          onYearSelect: handleYearSelect,
+          onMultiYearSelect: handleMultiYearSelect,
+        }}
       />
     </div>
   );
